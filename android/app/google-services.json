@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "170360365765",
+    "firebase_url": "https://scrubbr-portal-default-rtdb.firebaseio.com",
+    "project_id": "scrubbr-portal",
+    "storage_bucket": "scrubbr-portal.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170360365765:android:a20e75463c931ecaa1c6ac",
+        "android_client_info": {
+          "package_name": "com.scrubbrllc.scrubbr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJyOjEpwZDeGinpPSt-18QZLOf8uraNZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170360365765:android:3428af6b68957981a1c6ac",
+        "android_client_info": {
+          "package_name": "com.scrubbrllc.scrubbr.scrubbrpro.scrubbrpro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJyOjEpwZDeGinpPSt-18QZLOf8uraNZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
