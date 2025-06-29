@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:scrubbrpro/CreateAccount.dart';
+
+import 'ForgotPasswordScreen.dart';
 
 class ScrubbrLoginScreen extends StatefulWidget {
   const ScrubbrLoginScreen({super.key});
@@ -14,7 +17,7 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
 
   bool isLogin = true;
   String errorMessage = '';
-  bool isLoading = true;
+  bool isLoading = false;
 
   Future<void> _submit() async {
     setState(() {
@@ -23,12 +26,14 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
     });
 
     try {
+      print(isLogin);
       if (isLogin) {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
       } else {
+
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
@@ -52,6 +57,16 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
     _submit();
   }
 
+  void navigateToCreateAccount(){
+    Navigator.pop(context);
+    // Go to Account Page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreateAccountScreen()),
+    );
+
+
+  }
   @override
   Widget build(BuildContext context) {
     final gradientBlue = const LinearGradient(
@@ -70,9 +85,9 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Background
+          // Background gradient
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF3E9DF5), Color(0xFF96D9F9)],
                 begin: Alignment.topCenter,
@@ -80,20 +95,31 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
               ),
             ),
           ),
-
+          Image.asset('assets/images/scrubbr-login-bubble.PNG', fit: BoxFit.contain, height:500, width: double.infinity),
+          // 🔹 Overlay Image(s) — add image assets over the gradient
+          Positioned.fill(
+            child: Opacity(
+              opacity: 1,
+              child: Image.asset(
+                'assets/images/bubbles.PNG',
+                fit: BoxFit.cover,
+                height: 200,
+              ),
+            ),
+          ),
           // White bottom card
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               height: 260,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
               ),
             ),
           ),
 
-          // Foreground content
+          // Main content
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
@@ -102,14 +128,14 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
                 const Spacer(),
                 Text(
                   'Scrubbr',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 42,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     shadows: [Shadow(blurRadius: 4, color: Colors.black26)],
                   ),
                 ),
-                Text(
+                const Text(
                   'PRO APP',
                   style: TextStyle(
                     fontSize: 16,
@@ -129,18 +155,38 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
                 if (errorMessage.isNotEmpty)
                   Text(
                     errorMessage,
-                    style: TextStyle(color: Colors.red, fontSize: 15),
+                    style: const TextStyle(color: Colors.red, fontSize: 15),
                   ),
 
+                // 🔹 Move Forgot Password here
                 const SizedBox(height: 8),
-                Text('Forgot Password?', style: TextStyle(color: Colors.black54)),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ),
 
                 const Spacer(flex: 3),
               ],
             ),
           ),
 
-          // Buttons pinned at bottom over the white card
+          // Bottom buttons with shadows
           Positioned(
             bottom: 60,
             left: 32,
@@ -154,13 +200,13 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
                       () => _toggleModeAndSubmit(true),
                 ),
                 const SizedBox(height: 8),
-                Text('or', style: TextStyle(color: Colors.grey[700])),
+                const Text('or', style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 8),
                 _buildGradientButton(
                   'Create an account',
                   Colors.black87,
                   gradientGreen,
-                      () => _toggleModeAndSubmit(false),
+                      () => navigateToCreateAccount(),
                 ),
                 if (isLoading) const SizedBox(height: 16),
                 if (isLoading) const CircularProgressIndicator(color: Colors.white),
@@ -168,7 +214,7 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
             ),
           ),
         ],
-      ),
+      )
     );
   }
 
@@ -196,7 +242,8 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
     );
   }
 
-  Widget _buildGradientButton(String text, Color textColor, Gradient gradient, VoidCallback onTap) {
+  Widget _buildGradientButton(
+      String text, Color textColor, Gradient gradient, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -207,9 +254,9 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 3),
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 10,
+              offset: Offset(0, 6),
             ),
           ],
         ),

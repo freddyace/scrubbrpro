@@ -16,7 +16,6 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   bool isOnline = false;
-  final geo = GeoFirePoint(GeoPoint(35.681236, 139.767125));
   final uid = FirebaseAuth.instance.currentUser!.uid;
   late ScrubbrTimer scrubbrTimer;
   int _selectedIndex = 0;

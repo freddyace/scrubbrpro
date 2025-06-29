@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:scrubbrpro/CreateAccount.dart';
+import 'package:scrubbrpro/ScrubbrLoginScreen.dart';
+import 'package:scrubbrpro/utils/AuthService.dart';
 import 'AuthGate.dart';
 
 // Handle background messages
@@ -89,6 +92,10 @@ class _ScrubbrProAppState extends State<ScrubbrProApp> {
       title: 'Scrubbr Pro',
       theme: ThemeData(primarySwatch: Colors.amber),
       home: AuthGate(),
+      routes: {
+        '/login': (context) => const ScrubbrLoginScreen(),
+        '/create-account': (context) => const CreateAccountScreen(),
+      },
     );
   }
 }

@@ -43,7 +43,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   permission_handler: ^12.0.0+1
   firebase_messaging: ^15.2.7
-
+  google_maps_flutter: ^2.10.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -60,16 +60,15 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/bubbles.PNG
+    - assets/images/scrubbr-login-bubble.PNG
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
