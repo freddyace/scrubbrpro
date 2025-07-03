@@ -1,87 +1,168 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class PayoutsPage extends StatelessWidget {
-  const PayoutsPage({Key? key}) : super(key: key);
-
-  final List<double> mockWeeklyEarnings = const [50.0, 75.0, 100.0, 65.0, 120.0, 90.0, 40.0];
-
-  List<BarChartGroupData> _buildBarGroups(List<double> earnings) {
-    return List.generate(earnings.length, (index) {
-      return BarChartGroupData(
-        x: index,
-        barRods: [
-          BarChartRodData(
-            toY: earnings[index],
-            color: Colors.blueAccent,
-            width: 16,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ],
-      );
-    });
-  }
+  const PayoutsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final barGroups = _buildBarGroups(mockWeeklyEarnings);
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Earnings'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'This Week',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '\$${mockWeeklyEarnings.reduce((a, b) => a + b).toStringAsFixed(2)} total',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 30),
-            AspectRatio(
-              aspectRatio: 1.4,
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: 150,
-                  barTouchData: BarTouchData(enabled: true),
-                  titlesData: FlTitlesData(
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              days[value.toInt()],
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true, reservedSize: 28),
-                    ),
-                    topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/temp/avatar.jpg'),
                   ),
-                  borderData: FlBorderData(show: false),
-                  barGroups: barGroups,
-                  gridData: FlGridData(show: false),
+                  const SizedBox(width: 10),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Juliana Silva", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Scrubbr", style: TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.notifications_none),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.menu),
+                ],
+              ),
+            ),
+
+            // Balance card
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF4FACFE), Color(0xFFAaf8db)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text("\$1,050.00",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                        SizedBox(height: 4),
+                        Text("Balance", style: TextStyle(color: Colors.white70)),
+                        SizedBox(height: 8),
+                        Text("****\n123-456-7890", style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    const Spacer(),
+                    const Column(
+                      children: [
+                        Icon(Icons.access_time, color: Colors.white, size: 30),
+                        SizedBox(height: 8),
+                        Text("Weekly\nEarnings",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),
+
+            const SizedBox(height: 16),
+
+            // Transfer and Request buttons
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  Column(
+                    children: [
+                      Icon(Icons.attach_money, size: 32, color: Colors.black),
+                      SizedBox(height: 4),
+                      Text("Transfer")
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Icon(Icons.request_page, size: 32, color: Colors.black),
+                      SizedBox(height: 4),
+                      Text("Request")
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Job section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text("May 1st - May 7th", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Sort by Latest", style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                children: [
+                  _buildJobItem("Premium Car Cleaning", "May 4th, 2024", 160, icon: Icons.directions_car),
+                  _buildJobItem("Premium Car Cleaning", "May 3rd, 2024", 250, icon: Icons.directions_car),
+                  _buildJobItem("Standard Home Cleaning", "May 2nd, 2024", 420, icon: Icons.home),
+                  _buildJobItem("Standard Car Cleaning", "May 1st, 2024", 90, icon: Icons.directions_car),
+                  _buildJobItem("Standard Car Cleaning", "May 1st, 2024", 130, icon: Icons.directions_car),
+                ],
+              ),
+            )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildJobItem(String title, String date, int amount, {required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE6F0FF),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: Colors.blue),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(date, style: const TextStyle(color: Colors.grey)),
+              ],
+            ),
+          ),
+          Text("\$$amount", style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
       ),
     );
   }

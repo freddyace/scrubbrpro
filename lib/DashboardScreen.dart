@@ -88,13 +88,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 const CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage('assets/profile.jpg'), // Replace
+                  backgroundImage: AssetImage('assets/images/temp/avatar.jpg'), // Replace
                 ),
                 const SizedBox(width: 10),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Juliana Silva', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Julian Silva', style: TextStyle(fontWeight: FontWeight.bold)),
                     Text('Scrubbr', style: TextStyle(color: Colors.grey)),
                   ],
                 ),

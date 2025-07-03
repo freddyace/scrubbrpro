@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scrubbrpro/AccountPage.dart';
+import 'package:scrubbrpro/AccountPage2.dart';
+
+import 'GigTypeSelectionPage.dart';
 
 class ScrubMapPage extends StatefulWidget {
   const ScrubMapPage({super.key});
@@ -88,27 +91,29 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => AccountPage(),
+                        pageBuilder: (_, __, ___) => AccountPage2(),
                         transitionsBuilder: (_, animation, __, child) {
                           const begin = Offset(1.0, 0.0);
                           const end = Offset.zero;
-                          final tween = Tween(begin: begin, end: end);
+                          final curve = Curves.fastOutSlowIn;
+                          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
                           final offsetAnimation = animation.drive(tween);
                           return SlideTransition(position: offsetAnimation, child: child, textDirection: TextDirection.rtl);
                         },
+                        transitionDuration: const Duration(milliseconds: 275)
                       ),
                     );
                   },
                   child: const CircleAvatar(
                     radius: 20,
-                    backgroundImage: AssetImage('assets/profile.jpg'),
+                    backgroundImage: AssetImage('assets/images/temp/avatar.jpg'),
                   ),
                 ),
                 const SizedBox(width: 10),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Juliana Silva', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Julian Silva', style: TextStyle(fontWeight: FontWeight.bold)),
                     Text('Scrubbr', style: TextStyle(color: Colors.grey)),
                   ],
                 ),
@@ -128,7 +133,7 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF3A7BD5), Color(0xFF00D2FF)],
+                  colors: [Color(0xFF4FACFE), Color(0xFFAaf8db)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
@@ -151,6 +156,28 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
                     value: isScrubModeOn,
                     onChanged: (value) {
                       setState(() => isScrubModeOn = value);
+
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) =>
+                            const GigTypeSelectionPage(),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(0.0, 1.0); // slide from bottom
+                              const end = Offset.zero;
+                              const curve = Curves.easeOut;
+
+                              final tween = Tween(begin: begin, end: end).chain(
+                                CurveTween(curve: curve),
+                              );
+                              final offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(position: offsetAnimation, child: child);
+                            },
+                            transitionDuration: const Duration(milliseconds: 400),
+                          ),
+                        );
+                      });
                     },
                     activeColor: Colors.white,
                     activeTrackColor: Colors.lightGreenAccent,

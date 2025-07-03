@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire_plus/geoflutterfire_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scrubbrpro/AccountPage.dart';
+import 'package:scrubbrpro/AccountPage2.dart';
 import 'package:scrubbrpro/PayoutsPage.dart';
 import 'package:scrubbrpro/SupportPage.dart';
 import 'package:scrubbrpro/utils/ScrubbrTimer.dart';
@@ -129,7 +130,7 @@ class _DashboardState extends State<Dashboard> {
                 // Go to Account Page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AccountPage()),
+                  MaterialPageRoute(builder: (context) => AccountPage2()),
                 );
               },
             ),
