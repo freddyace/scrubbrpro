@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:scrubbrpro/utils/ScrubbrTimer.dart';
 
 class GigTypeSelectionPage extends StatefulWidget {
   const GigTypeSelectionPage({super.key});
@@ -10,6 +14,9 @@ class GigTypeSelectionPage extends StatefulWidget {
 class _GigTypeSelectionPageState extends State<GigTypeSelectionPage> {
   String selectedType = '';
   bool agreedToTerms = false;
+  bool isOnline = false;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  late ScrubbrTimer scrubbrTimer;
 
   Widget _buildGigButton(String label, Color color, bool selected) {
     return GestureDetector(
@@ -36,7 +43,7 @@ class _GigTypeSelectionPageState extends State<GigTypeSelectionPage> {
           child: Text(
             label,
             style: TextStyle(
-              color: selected && label != 'Auto' ? Colors.white : Colors.black87,
+              color: label != 'Auto' ? Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87 : selected ? Colors.black : Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
@@ -45,15 +52,69 @@ class _GigTypeSelectionPageState extends State<GigTypeSelectionPage> {
       ),
     );
   }
+  Future<void> toggleAvailability(bool value) async {
+    setState(() => isOnline = value);
 
-  void _start() {
-    if (selectedType.isNotEmpty && agreedToTerms) {
-      // Proceed to next step (navigate or activate)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Selected gig: $selectedType")),
-      );
+    if (isOnline) {
+      final permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        // Handle denied permissions
+        return;
+      }
+
+      // Mark online in Firestore
+      await FirebaseFirestore.instance.collection('scrubbrs').doc(uid).set({
+        'isOnline': true,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      // Start background timer
+      scrubbrTimer.start();
+    } else {
+      // Mark offline in Firestore
+      await FirebaseFirestore.instance.collection('scrubbrs').doc(uid).set({
+        'isOnline': false,
+      }, SetOptions(merge: true));
+
+      // Stop location tracking
+      scrubbrTimer.stop();
     }
   }
+  Future<void> _start() async {
+    final currentContext = context;
+
+    if (selectedType.isEmpty || !agreedToTerms) {
+      ScaffoldMessenger.of(currentContext).showSnackBar(
+        const SnackBar(content: Text("Please select gig type and agree to terms!")),
+      );
+      return;
+    }
+
+    try {
+      await toggleAvailability(true);
+    } catch (e) {
+      print("Error in toggleAvailability: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Something went wrong. Please try again.")),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Navigator.of(currentContext).pushReplacementNamed('/dashboard');w
+      Navigator.pop(context);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    scrubbrTimer = ScrubbrTimer(uid: uid); // assuming this is the right constructor
+  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -5,8 +5,10 @@ class PayoutsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,9 +29,6 @@ class PayoutsPage extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  const Icon(Icons.notifications_none),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.menu),
                 ],
               ),
             ),
@@ -43,7 +42,7 @@ class PayoutsPage extends StatelessWidget {
                   gradient: const LinearGradient(
                     colors: [Color(0xFF4FACFE), Color(0xFFAaf8db)],
                     begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
+                    end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -52,26 +51,26 @@ class PayoutsPage extends StatelessWidget {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text("\$1,050.00",
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white)),
+                                color: Theme.of(context).scaffoldBackgroundColor)),
                         SizedBox(height: 4),
-                        Text("Balance", style: TextStyle(color: Colors.white70)),
+                        Text("Balance", style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor)),
                         SizedBox(height: 8),
-                        Text("****\n123-456-7890", style: TextStyle(color: Colors.white)),
+                        Text("****\n123-456-7890", style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor)),
                       ],
                     ),
                     const Spacer(),
-                    const Column(
+                    Column(
                       children: [
-                        Icon(Icons.access_time, color: Colors.white, size: 30),
+                        Icon(Icons.access_time, color: Colors.black87, size: 30),
                         SizedBox(height: 8),
                         Text("Weekly\nEarnings",
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white)),
+                            style: TextStyle(color: Colors.black87)),
                       ],
                     )
                   ],
@@ -86,17 +85,17 @@ class PayoutsPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
+                children: [
                   Column(
                     children: [
-                      Icon(Icons.attach_money, size: 32, color: Colors.black),
+                      Icon(Icons.attach_money, size: 32, color: isDark ? Colors.white : Colors.black),
                       SizedBox(height: 4),
                       Text("Transfer")
                     ],
                   ),
                   Column(
                     children: [
-                      Icon(Icons.request_page, size: 32, color: Colors.black),
+                      Icon(Icons.request_page, size: 32, color: isDark ? Colors.white : Colors.black),
                       SizedBox(height: 4),
                       Text("Request")
                     ],

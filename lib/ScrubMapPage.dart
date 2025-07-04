@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scrubbrpro/AccountPage.dart';
-import 'package:scrubbrpro/AccountPage2.dart';
-
+import 'package:scrubbrpro/utils/ScrubbrTimer.dart';
+import 'package:scrubbrpro/utils/InheritedWidget.dart';
 import 'GigTypeSelectionPage.dart';
 
 class ScrubMapPage extends StatefulWidget {
@@ -16,17 +18,32 @@ class ScrubMapPage extends StatefulWidget {
 
 class _ScrubMapPageState extends State<ScrubMapPage> {
   bool isScrubModeOn = false;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  late ScrubbrTimer scrubbrTimer;
   Completer<GoogleMapController> _controller = Completer();
   Position? _currentPosition;
   StreamSubscription<Position>? _positionStream;
   final LatLng _initialPosition = LatLng(37.7749, -122.4194); // Fallback
-
+  bool isDarkMode = false;
   @override
   void initState() {
     super.initState();
     _getLocationUpdates();
-  }
+    fetchAvailabilityStatus();
 
+  }
+  Future<void> fetchAvailabilityStatus() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final doc = await FirebaseFirestore.instance.collection('scrubbrs').doc(uid).get();
+      if (doc.exists && mounted) {
+        final data = doc.data();
+        setState(() {
+          isScrubModeOn = data?['isOnline'] ?? false;
+        });
+      }
+    }
+  }
   void _getLocationUpdates() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return;
@@ -51,7 +68,35 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
       ));
     });
   }
+  Future<void> toggleAvailability(bool value) async {
+    setState(() => isScrubModeOn = value);
 
+    if (isScrubModeOn) {
+      final permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        // Handle denied permissions
+        return;
+      }
+
+      // Mark online in Firestore
+      await FirebaseFirestore.instance.collection('scrubbrs').doc(uid).set({
+        'isOnline': true,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      // Start background timer
+      scrubbrTimer.start();
+    } else {
+      // Mark offline in Firestore
+      await FirebaseFirestore.instance.collection('scrubbrs').doc(uid).set({
+        'isOnline': false,
+      }, SetOptions(merge: true));
+
+      // Stop location tracking
+      scrubbrTimer.stop();
+    }
+  }
   @override
   void dispose() {
     _positionStream?.cancel();
@@ -63,6 +108,7 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
     LatLng target = _currentPosition != null
         ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
         : _initialPosition;
+    isDarkMode = InheritedThemeWrapper.of(context).isDarkMode;
 
     return Scaffold(
       body: Stack(
@@ -91,7 +137,7 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => AccountPage2(),
+                        pageBuilder: (_, __, ___) => AccountPage(),
                         transitionsBuilder: (_, animation, __, child) {
                           const begin = Offset(1.0, 0.0);
                           const end = Offset.zero;
@@ -148,14 +194,15 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Scrub\nMode',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Switch(
                     value: isScrubModeOn,
                     onChanged: (value) {
                       setState(() => isScrubModeOn = value);
+                      if(value){
 
                       Future.delayed(const Duration(milliseconds: 300), () {
                         Navigator.of(context).push(
@@ -178,6 +225,10 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
                           ),
                         );
                       });
+                      }
+                      else{
+                        toggleAvailability(false);
+                      }
                     },
                     activeColor: Colors.white,
                     activeTrackColor: Colors.lightGreenAccent,

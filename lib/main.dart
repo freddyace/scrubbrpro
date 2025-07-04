@@ -5,8 +5,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:scrubbrpro/CreateAccount.dart';
 import 'package:scrubbrpro/GigTypeSelectionPage.dart';
+import 'package:scrubbrpro/ScrubMapPage.dart';
 import 'package:scrubbrpro/ScrubbrLoginScreen.dart';
 import 'package:scrubbrpro/SupportChatScreen.dart';
+import 'package:scrubbrpro/utils/InheritedWidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'AuthGate.dart';
 
 // Handle background messages
@@ -19,25 +22,36 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  final prefs = await SharedPreferences.getInstance();
+  final isDarkMode = prefs.getBool('isDarkMode') ?? false;
   // Set background handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(ScrubbrProApp());
+  runApp(ScrubbrProApp(isDarkMode: isDarkMode));
 }
 
 class ScrubbrProApp extends StatefulWidget {
+  final bool isDarkMode;
+  const ScrubbrProApp({super.key, required this.isDarkMode});
+
   @override
   _ScrubbrProAppState createState() => _ScrubbrProAppState();
 }
 
 class _ScrubbrProAppState extends State<ScrubbrProApp> {
+  late bool _isDarkMode;
+
   @override
   void initState() {
     super.initState();
+    _isDarkMode = widget.isDarkMode;
     initFCM();
   }
-
+  void _toggleTheme(bool value) async {
+    setState(() => _isDarkMode = value);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', value);
+  }
   void initFCM() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -90,15 +104,25 @@ class _ScrubbrProAppState extends State<ScrubbrProApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Scrubbr Pro',
-      theme: ThemeData(primarySwatch: Colors.amber),
-      home: AuthGate(),
-      routes: {
-        '/login': (context) => const ScrubbrLoginScreen(),
-        '/create-account': (context) => const CreateAccountScreen(),
-        '/support-chat': (context) => const SupportChatScreen(),
-        '/select-gig-type': (context) => const GigTypeSelectionPage()
-      },
+        title: 'Scrubbr Pro',
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+        themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        home: AuthGate(),
+        routes: {
+          '/login': (context) => const ScrubbrLoginScreen(),
+          '/create-account': (context) => const CreateAccountScreen(),
+          '/support-chat': (context) => const SupportChatScreen(),
+          '/select-gig-type': (context) => const GigTypeSelectionPage(),
+          '/map-page': (context) => const ScrubMapPage()
+        },
+        builder: (context, child) {
+          return InheritedThemeWrapper(
+            isDarkMode: _isDarkMode,
+            toggleTheme: _toggleTheme,
+            child: child!,
+          );
+        }
     );
   }
 }

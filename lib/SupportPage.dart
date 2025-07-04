@@ -21,14 +21,14 @@ class SupportPage extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [Color(0xFF4FACFE), Color(0xFFAaf8db)],
                 begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                end: Alignment.bottomLeft,
               ),
             ),
-            child: const Center(
+            child: Center(
               child: Text(
                 'Support',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -70,8 +70,8 @@ class SupportPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        icon: const Icon(Icons.chat_bubble_outline, color: Colors.white),
-                        label: const Text('Start Live Chat', style: TextStyle(color: Colors.white)),
+                        icon: Icon(Icons.chat_bubble_outline, color: Theme.of(context).scaffoldBackgroundColor),
+                        label: Text('Start Live Chat', style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor)),
                         onPressed: () => _startLiveChat(context),
                       ),
                     ),

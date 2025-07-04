@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scrubbrpro/AccountPage.dart';
+import 'AccountPage.dart';
 
 class RatingsPage extends StatelessWidget {
   const RatingsPage({super.key});
@@ -11,8 +11,8 @@ class RatingsPage extends StatelessWidget {
     final hasRatings = ratingsCount.any((r) => r > 0);
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor, // ✅ responds to theme
+    body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -55,9 +55,6 @@ class RatingsPage extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  const Icon(Icons.notifications_none),
-                  const SizedBox(width: 10),
-                  const Icon(Icons.more_vert),
                 ],
               ),
             ),
@@ -157,7 +154,7 @@ class RatingsPage extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   children:
-                      List.generate(3, (index) => _buildReviewCard(index + 1)),
+                      List.generate(3, (index) => _buildReviewCard(index + 1, context)),
                 ),
               ),
             ] else ...[
@@ -175,13 +172,13 @@ class RatingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewCard(int jobNumber) {
+  Widget _buildReviewCard(int jobNumber, BuildContext context) {
     return Container(
       width: 280,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),

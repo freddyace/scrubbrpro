@@ -39,7 +39,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
           if (!isUser)
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: Image.asset('assets/images/bubbles.PNG', height: 28),
+              child: Image.asset('assets/images/chat-bubble.png', height: 28),
             ),
           Column(
             crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -48,7 +48,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
                 decoration: BoxDecoration(
-                  color: isUser ? const Color(0xFFE6F0FF) : const Color(0xFFF1F1F1),
+                  color: isUser ? const Color(0xFFAaf8db) : const Color(0xFFF1F1F1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -71,15 +71,24 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        title: const Text("Juliana SIIVa", style: TextStyle(color: Colors.black)),
+        title: const Text("Chat with Support", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF4FACFE), Color(0xFFAaf8db)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
         ),
       ),
       body: Column(
