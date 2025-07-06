@@ -105,7 +105,7 @@ class _GigTypeSelectionPageState extends State<GigTypeSelectionPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Navigator.of(currentContext).pushReplacementNamed('/dashboard');w
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     });
   }
 
@@ -233,7 +233,7 @@ class _GigTypeSelectionPageState extends State<GigTypeSelectionPage> {
           ),
           const SizedBox(height: 40),
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: const Text(
               'Cancel',
               style: TextStyle(

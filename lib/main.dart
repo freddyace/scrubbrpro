@@ -5,12 +5,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:scrubbrpro/CreateAccount.dart';
 import 'package:scrubbrpro/GigTypeSelectionPage.dart';
+import 'package:scrubbrpro/NotificationsPage.dart';
 import 'package:scrubbrpro/ScrubMapPage.dart';
 import 'package:scrubbrpro/ScrubbrLoginScreen.dart';
 import 'package:scrubbrpro/SupportChatScreen.dart';
+import 'package:scrubbrpro/TermsOfServicePage.dart';
 import 'package:scrubbrpro/utils/InheritedWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'AuthGate.dart';
+import 'ResetPasswordPage.dart';
 
 // Handle background messages
 @pragma('vm:entry-point')
@@ -114,7 +117,10 @@ class _ScrubbrProAppState extends State<ScrubbrProApp> {
           '/create-account': (context) => const CreateAccountScreen(),
           '/support-chat': (context) => const SupportChatScreen(),
           '/select-gig-type': (context) => const GigTypeSelectionPage(),
-          '/map-page': (context) => const ScrubMapPage()
+          '/map-page': (context) => const ScrubMapPage(),
+          '/notifications-page': (context) => NotificationsPage(),
+          '/reset-password': (context) => const ResetPasswordPage(),
+          '/terms-of-service-page': (context) => const TermsOfServicePage()
         },
         builder: (context, child) {
           return InheritedThemeWrapper(

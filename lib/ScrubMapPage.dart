@@ -164,9 +164,26 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
                   ],
                 ),
                 const Spacer(),
-                const Icon(Icons.notifications_none),
+                 GestureDetector(
+                   onTap: (){
+                     Navigator.pushNamed(context, '/notifications-page');
+                   },
+                   child:
+                 Container(
+                   width: 50,
+                     height: 50,
+                     decoration:  BoxDecoration(
+                       gradient: LinearGradient(
+                         colors: [Color(0xFF4FACFE), Color(0xFFAaf8db)],
+                         begin: Alignment.topLeft,
+                         end: Alignment.bottomRight,
+                       ),
+                       borderRadius: BorderRadius.circular(40)
+                     ),
+                    // color: Colors.white,
+                    child: Icon(Icons.notifications, size: 30, color: Colors.white,)),
+                 ),
                 const SizedBox(width: 10),
-                const Icon(Icons.more_vert),
               ],
             ),
           ),
@@ -195,22 +212,21 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Scrub\nMode',
+                    'Scrub Mode',
                     style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Switch(
                     value: isScrubModeOn,
-                    onChanged: (value) {
+                    onChanged: (value) async {
                       setState(() => isScrubModeOn = value);
-                      if(value){
 
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        Navigator.of(context).push(
+                      if (value) {
+                        final result = await Navigator.of(context).push<bool>(
                           PageRouteBuilder(
                             pageBuilder: (context, animation, secondaryAnimation) =>
                             const GigTypeSelectionPage(),
                             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              const begin = Offset(0.0, 1.0); // slide from bottom
+                              const begin = Offset(0.0, 1.0);
                               const end = Offset.zero;
                               const curve = Curves.easeOut;
 
@@ -224,9 +240,13 @@ class _ScrubMapPageState extends State<ScrubMapPage> {
                             transitionDuration: const Duration(milliseconds: 400),
                           ),
                         );
-                      });
-                      }
-                      else{
+
+                        if (result != true) {
+                          // User canceled — revert switch
+                          setState(() => isScrubModeOn = false);
+                        }
+
+                      } else {
                         toggleAvailability(false);
                       }
                     },

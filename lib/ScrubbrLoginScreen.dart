@@ -26,7 +26,6 @@ class _ScrubbrLoginScreenState extends State<ScrubbrLoginScreen> {
     });
 
     try {
-      print(isLogin);
       if (isLogin) {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
